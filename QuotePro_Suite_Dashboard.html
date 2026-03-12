@@ -242,12 +242,45 @@ body{font-family:var(--font-display);background:var(--bg-primary);color:var(--te
 #pmcDashboardScreen{display:none}
 #pmcUploadScreen{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px;position:relative}
 .pmc-topbar-badge{padding:4px 10px;border-radius:6px;font-size:10px;font-weight:700;font-family:var(--font-mono);background:linear-gradient(135deg,rgba(57,210,192,0.15),rgba(188,140,255,0.1));color:var(--accent-cyan);border:1px solid rgba(57,210,192,0.25)}
+
+/* Login screen */
+#loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at top,rgba(88,166,255,0.16),transparent 55%),var(--bg-primary);padding:24px}
+.login-card{background:var(--bg-card);border:1px solid var(--border);border-radius:18px;box-shadow:0 18px 45px rgba(0,0,0,0.45);padding:28px 26px;max-width:360px;width:100%;display:flex;flex-direction:column;gap:14px}
+.login-logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--accent-blue),var(--accent-purple));display:flex;align-items:center;justify-content:center;color:#000;font-weight:700;font-family:var(--font-display);margin-bottom:4px}
+.login-card h1{font-size:22px;margin:0;color:var(--text-primary)}
+.login-subtitle{margin:0 0 6px 0;font-size:13px;color:var(--text-secondary)}
+.login-form{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.login-label{font-size:11px;font-weight:500;color:var(--text-secondary)}
+.login-input{margin:0;padding:7px 9px;border-radius:8px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-family:var(--font-display);font-size:13px}
+.login-input:focus{outline:none;border-color:var(--accent-blue);box-shadow:0 0 0 1px rgba(88,166,255,0.45)}
+.login-error{font-size:11px;color:var(--accent-red);margin-top:2px}
+.login-btn{margin-top:6px;width:100%;padding:8px 10px;border-radius:10px;border:1px solid rgba(88,166,255,0.5);background:linear-gradient(135deg,var(--accent-blue),var(--accent-cyan));color:#000;font-weight:600;font-family:var(--font-display);cursor:pointer}
+.login-btn:hover{filter:brightness(1.05)}
+.login-note{margin:4px 0 0 0;font-size:11px;color:var(--text-muted)}
+
 </style>
 </head>
 <body>
 
+<!-- SIMPLE LOGIN SCREEN -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">Q</div>
+    <h1>QuotePro Suite</h1>
+    <p class="login-subtitle">Sign in to access the dashboards</p>
+    <form class="login-form" onsubmit="return handleLogin(event)">
+      <label class="login-label" for="loginUser">Username</label>
+      <input id="loginUser" class="login-input" type="text" autocomplete="username" required>
+      <label class="login-label" for="loginPass">Password</label>
+      <input id="loginPass" class="login-input" type="password" autocomplete="current-password" required>
+      <div id="loginError" class="login-error" style="display:none"></div>
+      <button type="submit" class="login-btn">Sign In</button>
+    </form>
+  </div>
+</div>
+
 <!-- MODE SELECTOR -->
-<div id="modeScreen">
+<div id="modeScreen" style="display:none">
   <div class="mode-logo"><div class="mode-logo-icon">Q</div><h1>QuotePro Suite</h1></div>
   <p class="mode-tagline">Select your dashboard module to get started</p>
   <div class="mode-cards">
@@ -359,6 +392,7 @@ body{font-family:var(--font-display);background:var(--bg-primary);color:var(--te
       <button class="topbar-btn" onclick="openExportModal()">⬇ Export</button>
       <button class="topbar-btn" onclick="openDashboardReplace()">Replace Values</button>
       <button class="topbar-btn" onclick="resetDashboard()">↻ New Upload</button>
+      <button class="topbar-btn" onclick="logout()">Logout</button>
       <button class="topbar-btn primary" id="publishBtn" onclick="publishDashboard()">◆ Publish</button>
     </div>
   </div>
@@ -398,7 +432,7 @@ body{font-family:var(--font-display);background:var(--bg-primary);color:var(--te
     <div class="tab-panel" id="tab-brands"><div class="kpi-grid" id="brandKpis"></div><div class="chart-grid single"><div class="chart-card"><div class="chart-header"><div><div class="chart-title">Brand Performance</div></div></div><div class="chart-container tall"><canvas id="brandBarChart"></canvas></div></div></div><div class="data-table-wrap"><div class="table-header"><h3>Brand Details</h3></div><div style="overflow-x:auto"><table class="data-table"><thead><tr><th>Brand</th><th>Quotes</th><th>Value (AED)</th><th>Avg</th><th>Share</th></tr></thead><tbody id="brandTableBody"></tbody></table></div></div></div>
     <div class="tab-panel" id="tab-analytics"><div class="insights-grid" id="insightsGrid"></div><div class="chart-grid"><div class="chart-card"><div class="chart-header"><div><div class="chart-title">Value vs Volume</div></div></div><div class="chart-container"><canvas id="dualAxisChart"></canvas></div></div><div class="chart-card"><div class="chart-header"><div><div class="chart-title">Conversion Rate</div></div></div><div class="chart-container"><canvas id="conversionChart"></canvas></div></div></div><div class="chart-grid single"><div class="chart-card"><div class="chart-header"><div><div class="chart-title">Response Time</div></div></div><div class="chart-container small"><canvas id="responseTimeChart"></canvas></div></div></div></div></div>
   </div>
-  <div class="dash-footer">QuotePro — Quotation Intelligence Dashboard &middot; Built for Supply Chain & Logistics Operations</div>
+  <div class="dash-footer">QuotePro — Quotation Intelligence Dashboard</div>
 </div>
 
 <!-- PMC UPLOAD -->
@@ -438,6 +472,7 @@ body{font-family:var(--font-display);background:var(--bg-primary);color:var(--te
       <button class="topbar-btn" onclick="openDashboardReplace(true)">Replace Values</button>
       <button class="topbar-btn" onclick="resetPmcDashboard()">↻ New Upload</button>
       <button class="topbar-btn" onclick="showModeScreen()" style="border-color:rgba(57,210,192,0.3);color:var(--accent-cyan)">⊞ Switch Module</button>
+      <button class="topbar-btn" onclick="logout()">Logout</button>
     </div>
   </div>
 
@@ -513,6 +548,9 @@ body{font-family:var(--font-display);background:var(--bg-primary);color:var(--te
 let rawJson=[],allData=[],gfData=[],filteredData=[],chartInstances={},currentPage=1,sortCol=-1,sortAsc=true,uploadedFileName='',beforeStats={},cleanOps=[],cleanScreenMode='quotepro';
 const PAGE_SIZE=50;
 const THEME_STORAGE_KEY='quoteProTheme';
+const AUTH_STORAGE_KEY='quoteProAuthUser';
+// Default credentials: admin / Admin@123 — change these for your environment
+const AUTH_USERS=[{user:'Babu',pass:'Babu@2026'}];
 
 // ═══ Theme presets (CSS vars + chart palette) ═══
 const THEME_PRESETS={
@@ -530,6 +568,39 @@ const THEME_PRESETS={
 const CUSTOM_THEME_STORAGE_KEY='quoteProCustomTheme';
 
 let CC={blue:'#58a6ff',cyan:'#39d2c0',emerald:'#3fb950',amber:'#d29922',red:'#f85149',purple:'#bc8cff',pink:'#f778ba',blueA:'rgba(88,166,255,0.15)',pal:THEME_PRESETS.dark.pal};
+
+function isAuthenticated(){
+  try{return !!localStorage.getItem(AUTH_STORAGE_KEY);}catch(e){return false}
+}
+function showLoginScreen(){
+  const ids=['loginScreen','modeScreen','uploadScreen','cleanScreen','dashboardScreen','pmcUploadScreen','pmcDashboardScreen'];
+  ids.forEach(id=>{const el=document.getElementById(id);if(!el)return;if(id==='loginScreen')el.style.display='flex';else el.style.display='none';});
+}
+function showModeSelector(){
+  const login=document.getElementById('loginScreen');
+  const mode=document.getElementById('modeScreen');
+  if(login)login.style.display='none';
+  if(mode)mode.style.display='block';
+}
+function handleLogin(ev){
+  if(ev&&ev.preventDefault)ev.preventDefault();
+  const u=document.getElementById('loginUser')?.value.trim()||'';
+  const p=document.getElementById('loginPass')?.value||'';
+  const err=document.getElementById('loginError');
+  const ok=AUTH_USERS.some(c=>c.user===u&&c.pass===p);
+  if(!ok){
+    if(err){err.textContent='Invalid username or password';err.style.display='block'}
+    return false;
+  }
+  if(err)err.style.display='none';
+  try{localStorage.setItem(AUTH_STORAGE_KEY,u)}catch(e){}
+  showModeSelector();
+  return false;
+}
+function logout(){
+  try{localStorage.removeItem(AUTH_STORAGE_KEY);}catch(e){}
+  showLoginScreen();
+}
 
 function applyTheme(themeId){
   if(themeId==='custom'){
@@ -1389,6 +1460,11 @@ window.addEventListener('DOMContentLoaded', function(){
   }else{
     applyTheme(saved&&THEME_PRESETS[saved]?saved:'dark');
   }
+   if(isAuthenticated()){
+     showModeSelector();
+   }else{
+     showLoginScreen();
+   }
 });
 
 function processPmcFile(file){
