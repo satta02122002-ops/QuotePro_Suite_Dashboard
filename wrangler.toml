@@ -1,0 +1,5 @@
+# Cloudflare Pages - QuotePro Dashboard
+# Used by Wrangler CLI and GitHub Actions for deployment
+name = "quotepro-dashboard"
+compatibility_date = "2024-01-01"
+pages_build_output_dir = "."

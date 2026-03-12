@@ -1,0 +1,19 @@
+# IDE / editor
+.cursor/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Debug / logs
+*.log
+debug-*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local env (do not commit secrets)
+.env
+.env.local
+.wrangler/
